@@ -15,6 +15,7 @@ const adminRoutes = require('./routes/adminRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
 const aiRoutes = require('./routes/aiRoutes');
 const subjectRoutes = require('./routes/subjectRoutes');
+const lessonRoutes = require('./routes/lessonRoutes');
 
 dotenv.config();
 
@@ -52,6 +53,7 @@ app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/upload', uploadRoutes);
 app.use('/api/v1/ai', aiRoutes);
 app.use('/api/v1/subject', subjectRoutes);
+app.use('/api/v1/lessons', lessonRoutes);
 
 app.get('/', (req, res) => {
     res.send('Learning Adventure Galaxy Backend is running');
