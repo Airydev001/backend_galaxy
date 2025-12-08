@@ -12,7 +12,8 @@ const progressSchema = new mongoose.Schema({
         required: true,
     },
     lessonId: {
-        type: String, // Assuming lesson IDs are strings within the Subject document
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Lesson',
         required: true,
     },
     score: {

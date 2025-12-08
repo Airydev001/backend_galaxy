@@ -54,6 +54,7 @@ app.use('/api/v1/upload', uploadRoutes);
 app.use('/api/v1/ai', aiRoutes);
 app.use('/api/v1/subject', subjectRoutes);
 app.use('/api/v1/lessons', lessonRoutes);
+app.use('/api/v1/progress', require('./routes/progressRoutes'));
 
 app.get('/', (req, res) => {
     res.send('Learning Adventure Galaxy Backend is running');

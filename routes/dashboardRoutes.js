@@ -17,12 +17,25 @@ router.get('/:kidId', async (req, res) => {
         // Find subjects suitable for the kid's age group
         const subjects = await Subject.find({ availableForAges: kid.ageGroup });
 
-        // Fetch lessons for each subject
+        // Fetch lessons for each subject and calculate progress
         const subjectsWithLessons = await Promise.all(subjects.map(async (subject) => {
+            // Get all lessons for this subject
             const lessons = await mongoose.model('Lesson').find({ subjectId: subject._id }).sort({ order: 1 });
+            const totalLessons = lessons.length;
+
+            // Get completed lessons count for this kid and subject
+            const completedCount = await mongoose.model('Progress').countDocuments({
+                kidId: kid._id,
+                subjectId: subject._id
+            });
+
+            // Calculate percentage
+            const progressPercent = totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0;
+
             return {
                 ...subject.toObject(),
                 lessons: lessons,
+                progressPercent: progressPercent
             };
         }));
 
