@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const Kid = require('../models/Kid');
 const Progress = require('../models/Progress');
+const Subject = require('../models/Subject');
+const Lesson = require('../models/Lesson');
+const mongoose = require('mongoose');
 
 // Get Parent Dashboard Stats
 router.get('/stats/:parentId', async (req, res) => {
