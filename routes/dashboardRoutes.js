@@ -32,6 +32,10 @@ router.get('/:kidId', async (req, res) => {
             // Calculate percentage
             const progressPercent = totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0;
 
+            console.log(`Subject: ${subject.name}, Kid: ${kid._id}`);
+            console.log(`Total Lessons: ${totalLessons}, Completed: ${completedCount}, Percent: ${progressPercent}`);
+            console.log(`Subject ID from Subject: ${subject._id}`);
+
             return {
                 ...subject.toObject(),
                 lessons: lessons,
