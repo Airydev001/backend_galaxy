@@ -32,6 +32,27 @@ router.post('/register', async (req, res) => {
     }
 });
 
+// Login Parent
+router.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const parent = await Parent.findOne({ email });
+
+        if (parent && parent.password === password) { // In production, bcrypt.compare
+            res.json({
+                _id: parent._id,
+                email: parent.email,
+                pin: parent.pin,
+            });
+        } else {
+            res.status(401).json({ message: 'Invalid email or password' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
 // Verify PIN
 router.post('/verify-pin', async (req, res) => {
     const { parentId, pin } = req.body;
