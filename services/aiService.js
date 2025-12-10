@@ -5,7 +5,7 @@ dotenv.config();
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-const generateLessonContent = async (topic, ageGroup) => {
+const generateLessonContent = async (topic, ageGroup, questionCount = 3) => {
   const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
   const prompt = `
@@ -23,7 +23,7 @@ const generateLessonContent = async (topic, ageGroup) => {
         }
       ]
     }
-    Generate 3 questions. Ensure the language is appropriate for the age group.
+    Generate ${questionCount} questions. Ensure the language is appropriate for the age group.
     IMPORTANT: Return ONLY the JSON string, no markdown formatting or backticks.
   `;
 
