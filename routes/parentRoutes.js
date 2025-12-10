@@ -138,20 +138,40 @@ router.get('/stats/:parentId', async (req, res) => {
         }
 
         // 6. Subject Breakdown
-        const breakdownAgg = await Progress.aggregate([
-            { $match: { kidId: { $in: kidIds } } },
-            { $group: { _id: "$subjectId", count: { $sum: 1 } } },
-            { $lookup: { from: "subjects", localField: "_id", foreignField: "_id", as: "subject" } },
-            { $unwind: "$subject" },
-            { $project: { title: "$subject.name", value: "$count" } }
-        ]);
+        // 6. Subject Breakdown (ALL Subjects)
+        // Fetch all subjects to ensure we show the full curriculum (e.g., matching the 5 subjects)
+        const allSubjects = await Subject.find({});
+        const colors = ['#FF5733', '#33FF57', '#3357FF', '#FFC300', '#DAF7A6', '#9B59B6'];
 
-        const colors = ['#FF5733', '#33FF57', '#3357FF', '#FFC300', '#DAF7A6'];
-        const subjectBreakdown = breakdownAgg.map((item, index) => ({
-            title: item.title,
-            value: item.value,
-            color: colors[index % colors.length]
-        }));
+        const subjectBreakdown = [];
+
+        for (let i = 0; i < allSubjects.length; i++) {
+            const subject = allSubjects[i];
+
+            // Count completed lessons for this subject (Time Spent proxy)
+            const completedCount = await Progress.countDocuments({
+                kidId: { $in: kidIds },
+                subjectId: subject._id
+            });
+
+            // Count total available lessons for this subject to calculate percentage
+            const totalSubjectLessons = await Lesson.countDocuments({ subjectId: subject._id });
+
+            // Calculate percentage (0.0 to 1.0) for the progress bar
+            // If total lessons is 0, avoid division by zero
+            let percent = 0;
+            if (totalSubjectLessons > 0) {
+                const denominator = totalSubjectLessons * (kids.length || 1);
+                percent = denominator > 0 ? (completedCount / denominator) : 0;
+            }
+
+            subjectBreakdown.push({
+                title: subject.name,
+                value: completedCount, // This represents "Time/Activity"
+                percent: percent,      // This represents "Completion" (0.0 - 1.0)
+                color: colors[i % colors.length]
+            });
+        }
 
 
         res.json({
