@@ -20,7 +20,7 @@ router.post('/subjects', async (req, res) => {
 
 // Create a new Lesson for a Subject
 router.post('/lessons', async (req, res) => {
-    const { subjectId, title, description, questions, order } = req.body;
+    const { subjectId, title, description, questions, order, ageGroup } = req.body;
 
     try {
         const subject = await Subject.findById(subjectId);
@@ -34,6 +34,7 @@ router.post('/lessons', async (req, res) => {
             description,
             questions,
             order,
+            ageGroup,
         });
 
         res.status(201).json(lesson);

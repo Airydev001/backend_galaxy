@@ -14,6 +14,10 @@ const lessonSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    ageGroup: {
+        type: String,
+        required: true,
+    },
     questions: [{
         text: {
             type: String,

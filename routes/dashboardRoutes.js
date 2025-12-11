@@ -19,8 +19,11 @@ router.get('/:kidId', async (req, res) => {
 
         // Fetch lessons for each subject and calculate progress
         const subjectsWithLessons = await Promise.all(subjects.map(async (subject) => {
-            // Get all lessons for this subject
-            const lessons = await mongoose.model('Lesson').find({ subjectId: subject._id }).sort({ order: 1 });
+            // Get all lessons for this subject, filtered by age group
+            const lessons = await mongoose.model('Lesson').find({
+                subjectId: subject._id,
+                ageGroup: kid.ageGroup
+            }).sort({ order: 1 });
             const totalLessons = lessons.length;
 
             // Get completed lessons count for this kid and subject

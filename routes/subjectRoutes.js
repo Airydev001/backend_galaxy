@@ -19,8 +19,17 @@ router.get('/:subjectName/lessons', async (req, res) => {
             return res.status(404).json({ message: 'Subject not found' });
         }
 
-        // Find lessons for this subject
-        const lessons = await Lesson.find({ subjectId: subject._id })
+        // If kidId is provided to filter by age
+        let ageFilter = {};
+        if (req.query.kidId) {
+            const kid = await mongoose.model('Kid').findById(req.query.kidId);
+            if (kid && kid.ageGroup) {
+                ageFilter.ageGroup = kid.ageGroup;
+            }
+        }
+
+        // Find lessons for this subject (and optionally age group)
+        const lessons = await Lesson.find({ subjectId: subject._id, ...ageFilter })
             .sort({ order: 1 });
 
         // If kidId is provided, fetch progress
